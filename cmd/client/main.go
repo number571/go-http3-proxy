@@ -78,7 +78,7 @@ func main() {
 	req, err := http.NewRequest(
 		http.MethodPost,
 		remoteURL,
-		bytes.NewReader([]byte(`hello, world!`)),
+		bytes.NewReader([]byte(`hello, server!`)),
 	)
 	if err != nil {
 		panic(err)

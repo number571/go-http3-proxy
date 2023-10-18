@@ -16,7 +16,7 @@ $ go run ./cmd/proxy
 ## Terminal_3
 ## This terminal depends on Terminal_1 & Terminal_2
 $ go run ./cmd/client
-> 200 echo:'hello, world!'
+> 200 echo:'hello, server!'
 ```
 
 ## Dependencies
