@@ -26,4 +26,4 @@ $ go run ./cmd/client
 
 ## Internal
 
-The dependency with the implemented Socks5 proxy-server has a bug in the readFrom function in which the client does not receive a response from the server. This bug cannot be solved in any other way except by importing the repository itself. The error is related to the return of the buffer of the wrong size.
+The dependency with the implemented Socks5 proxy-server has a bug in the ReadFrom function in which the client does not receive a response from the server. This bug cannot be solved in any other way except by importing the repository itself. The error is related to the return of the buffer of the wrong size.

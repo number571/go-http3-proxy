@@ -23,23 +23,19 @@ const (
 	remoteURL  = "https://" + remoteHost
 )
 
-var (
-	remoteAddr *net.UDPAddr
-)
-
 // for QUIC protocol (quic-go)
-type sWrapper struct {
+type sConnWrapper struct {
 	net.PacketConn
 }
 
-func (c *sWrapper) SetReadBuffer(bytes int) error {
+func (c *sConnWrapper) SetReadBuffer(bytes int) error {
 	socks5udpConn := c.PacketConn.(*socks5.UDPConn)
 	udpConn := socks5udpConn.PacketConn.(*net.UDPConn)
 
 	return udpConn.SetReadBuffer(bytes)
 }
 
-func (c *sWrapper) SetWriteBuffer(bytes int) error {
+func (c *sConnWrapper) SetWriteBuffer(bytes int) error {
 	socks5udpConn := c.PacketConn.(*socks5.UDPConn)
 	udpConn := socks5udpConn.PacketConn.(*net.UDPConn)
 
@@ -60,12 +56,12 @@ func main() {
 					return nil, err
 				}
 
-				remoteAddr, err = net.ResolveUDPAddr("udp", addr)
+				remoteAddr, err := net.ResolveUDPAddr("udp", addr)
 				if err != nil {
-					panic(err)
+					return nil, err
 				}
 
-				connWrapper := &sWrapper{proxyConn.(net.PacketConn)}
+				connWrapper := &sConnWrapper{proxyConn.(net.PacketConn)}
 				earlyConn, err := quic.DialEarly(ctx, connWrapper, remoteAddr, tlsCfg, cfg)
 				if err != nil {
 					return nil, err
