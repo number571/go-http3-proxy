@@ -2,7 +2,10 @@ module github.com/number571/go-http3-proxy
 
 go 1.20
 
-require github.com/quic-go/quic-go v0.39.1
+require (
+	github.com/quic-go/quic-go v0.39.1
+	github.com/wzshiming/socks5 v0.4.3
+)
 
 require (
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect

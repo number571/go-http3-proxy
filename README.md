@@ -27,10 +27,6 @@ $ go run ./cmd/client
 1. Library with QUIC protocol implementation: https://github.com/quic-go/quic-go
 2. Socks5 proxy-server with UDP-support: https://github.com/wzshiming/socks5
 
-## Internal
-
-The dependency with the implemented socks5 proxy-server has a bug in the `ReadFrom` function in which the client does not receive a response from the server. This bug cannot be solved in any other way except by importing the repository itself. The error is related to the return of the buffer of the wrong size.
-
 ## Docker
 
 This example can also be run using docker. In this case, it is enough to use the make command, after which docker-compose will create three services: `server`, `proxy` and `client`. The client and server do not communicate directly with each other, but use bridges: `client-proxy` and `server-proxy`.
@@ -44,6 +40,7 @@ $ make
 > go-http3-proxy-client-1  | 200 echo:'hello, server!'
 > go-http3-proxy-client-1  | 200 echo:'hello, server!'
 > go-http3-proxy-client-1  | 200 echo:'hello, server!'
+...
 ```
 
 ### Docker-Compose

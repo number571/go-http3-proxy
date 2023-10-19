@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/number571/go-http3-proxy/internal/socks5"
+	"github.com/wzshiming/socks5"
 
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"

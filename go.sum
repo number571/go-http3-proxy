@@ -26,6 +26,8 @@ github.com/quic-go/quic-go v0.39.1/go.mod h1:T09QsDQWjLiQ74ZmacDfqZmhY/NLnw5BC40
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/wzshiming/socks5 v0.4.3 h1:kVEvp9d7MzRcTh1W2BerPtcJGTjsP22Ar3xL129mM6E=
+github.com/wzshiming/socks5 v0.4.3/go.mod h1:BvCAqlzocQN5xwLjBZDBbvWlrx8sCYSSbHEOf2wZgT0=
 go.uber.org/mock v0.3.0 h1:3mUxI1No2/60yUYax92Pt8eNOEecx2D3lcXZh2NEZJo=
 go.uber.org/mock v0.3.0/go.mod h1:a6FSlNadKUHUa9IP5Vyt1zh4fC7uAwxMutEAscFbkZc=
 golang.org/x/crypto v0.4.0 h1:UVQgzMY87xqpKNgb+kDsll2Igd33HszWHFLmpaRMq/8=

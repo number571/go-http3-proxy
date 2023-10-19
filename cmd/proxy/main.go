@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/number571/go-http3-proxy/internal/socks5"
+	"github.com/wzshiming/socks5"
 )
 
 func main() {
