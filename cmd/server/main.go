@@ -17,34 +17,27 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			fmt.Fprint(w, "hello, world!")
+		case http.MethodPost:
+			result, err := io.ReadAll(r.Body)
+			if err != nil {
+				fmt.Fprint(w, "error:", err.Error())
+				return
+			}
+			fmt.Fprintf(w, "echo:'%s'", string(result))
+		default:
+			fmt.Fprint(w, "method is not supported")
+		}
+	})
+
 	server := http3.Server{
 		Addr:      "0.0.0.0:8080",
 		Handler:   mux,
 		TLSConfig: generateTLSConfig(),
 	}
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet, http.MethodPost:
-			// pass
-		default:
-			fmt.Fprint(w, "method is not supported")
-			return
-		}
-
-		if r.Method == http.MethodGet {
-			fmt.Fprint(w, "hello, world!")
-			return
-		}
-
-		result, err := io.ReadAll(r.Body)
-		if err != nil {
-			fmt.Fprint(w, "error:", err.Error())
-			return
-		}
-
-		fmt.Fprintf(w, "echo:'%s'", string(result))
-	})
 
 	fmt.Println("Server is listening...")
 	fmt.Println(server.ListenAndServe())

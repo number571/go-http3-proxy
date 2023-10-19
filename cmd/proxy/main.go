@@ -7,10 +7,8 @@ import (
 )
 
 func main() {
+	// TCP is used only to create a `client-proxy` connection,
+	// but all other traffic (client-proxy-server) already uses the UDP protocol
 	fmt.Println("Proxy is listening...")
-	server := socks5.NewServer()
-	err := server.ListenAndServe("tcp", "0.0.0.0:1080")
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println(socks5.NewServer().ListenAndServe("tcp", "0.0.0.0:1080"))
 }
