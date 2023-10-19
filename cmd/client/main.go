@@ -43,32 +43,9 @@ func (c *sConnWrapper) SetWriteBuffer(bytes int) error {
 }
 
 func main() {
-	dialer, err := socks5.NewDialer(proxyURL)
-	if err != nil {
-		panic(err)
-	}
-
 	client := http.Client{
 		Transport: &http3.RoundTripper{
-			Dial: func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quic.EarlyConnection, error) {
-				proxyConn, err := dialer.DialContext(ctx, "udp", remoteHost)
-				if err != nil {
-					return nil, err
-				}
-
-				remoteAddr, err := net.ResolveUDPAddr("udp", addr)
-				if err != nil {
-					return nil, err
-				}
-
-				connWrapper := &sConnWrapper{proxyConn.(net.PacketConn)}
-				earlyConn, err := quic.DialEarly(ctx, connWrapper, remoteAddr, tlsCfg, cfg)
-				if err != nil {
-					return nil, err
-				}
-
-				return earlyConn, nil
-			},
+			Dial: proxyDialer(proxyURL),
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
 			},
@@ -95,4 +72,31 @@ func main() {
 	}
 
 	fmt.Println(resp.StatusCode, string(result))
+}
+
+func proxyDialer(proxyURL string) func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quic.EarlyConnection, error) {
+	dialer, err := socks5.NewDialer(proxyURL)
+	if err != nil {
+		panic(err)
+	}
+
+	return func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quic.EarlyConnection, error) {
+		proxyConn, err := dialer.DialContext(ctx, "udp", addr)
+		if err != nil {
+			return nil, err
+		}
+
+		remoteAddr, err := net.ResolveUDPAddr("udp", addr)
+		if err != nil {
+			return nil, err
+		}
+
+		connWrapper := &sConnWrapper{proxyConn.(net.PacketConn)}
+		earlyConn, err := quic.DialEarly(ctx, connWrapper, remoteAddr, tlsCfg, cfg)
+		if err != nil {
+			return nil, err
+		}
+
+		return earlyConn, nil
+	}
 }
