@@ -8,6 +8,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/number571/go-http3-proxy/internal/socks5"
 
@@ -15,12 +16,10 @@ import (
 	"github.com/quic-go/quic-go/http3"
 )
 
-const (
-	proxyHost = "127.0.0.1:1080"
-	proxyURL  = "socks5://" + proxyHost
-
+var (
+	// can be overwritten if used docker-mode (init.go)
+	proxyHost  = "127.0.0.1:1080"
 	remoteHost = "127.0.0.1:8080"
-	remoteURL  = "https://" + remoteHost
 )
 
 // for QUIC protocol (quic-go)
@@ -45,33 +44,36 @@ func (c *sConnWrapper) SetWriteBuffer(bytes int) error {
 func main() {
 	client := http.Client{
 		Transport: &http3.RoundTripper{
-			Dial: proxyDialer(proxyURL),
+			Dial: proxyDialer("socks5://" + proxyHost),
 			TLSClientConfig: &tls.Config{
 				InsecureSkipVerify: true,
 			},
 		},
 	}
 
-	req, err := http.NewRequest(
-		http.MethodPost,
-		remoteURL,
-		bytes.NewReader([]byte(`hello, server!`)),
-	)
-	if err != nil {
-		panic(err)
-	}
+	for {
+		req, err := http.NewRequest(
+			http.MethodPost,
+			"https://"+remoteHost,
+			bytes.NewReader([]byte(`hello, server!`)),
+		)
+		if err != nil {
+			panic(err)
+		}
 
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
+		resp, err := client.Do(req)
+		if err != nil {
+			panic(err)
+		}
 
-	result, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
+		result, err := io.ReadAll(resp.Body)
+		if err != nil {
+			panic(err)
+		}
 
-	fmt.Println(resp.StatusCode, string(result))
+		fmt.Println(resp.StatusCode, string(result))
+		time.Sleep(time.Second)
+	}
 }
 
 func proxyDialer(proxyURL string) func(ctx context.Context, addr string, tlsCfg *tls.Config, cfg *quic.Config) (quic.EarlyConnection, error) {

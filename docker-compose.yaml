@@ -1,0 +1,29 @@
+version: "3"
+services:
+  server:
+    build:
+      context: ./
+      dockerfile: cmd/server/Dockerfile
+    networks:
+      - server-proxy
+  proxy:
+    build:
+      context: ./
+      dockerfile: cmd/proxy/Dockerfile
+    networks:
+      - server-proxy
+      - client-proxy
+  client:
+    build:
+      context: ./
+      dockerfile: cmd/client/Dockerfile
+    depends_on:
+      - proxy
+      - server
+    networks:
+      - client-proxy
+networks:
+  client-proxy:
+    driver: bridge
+  server-proxy:
+    driver: bridge
